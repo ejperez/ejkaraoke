@@ -5,14 +5,27 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "cleanup": "tsc --build --clean",
+    "start": "node dist/server.js",
+    "test:video-downloader": "npm run build && node --test tests/video-downloader.test.js"
   },
   "dependencies": {
+    "better-queue": "^3.8.4",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
     "ytdlp-nodejs": "^3.4.5"
   },
   "allowScripts": {
     "ytdlp-nodejs@3.4.5": true
+  },
+  "devDependencies": {
+    "@types/better-queue": "^3.8.6",
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }
