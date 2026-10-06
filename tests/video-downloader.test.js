@@ -10,13 +10,13 @@ const FFMPEG_DIR = process.env.FFMPEG_DIR || null;
 
 test("Can download a video", async () => {
   const videoDownloader = new VideoDownloader(DOWNLOAD_DIR, FFMPEG_DIR);
-  const downloadedFile = await videoDownloader.download({
+  const result = await videoDownloader.download({
     videoId: "dQw4w9WgXcQ",
   });
 
   assert.ok(
-    downloadedFile &&
-      downloadedFile.includes(
+    result &&
+      result.filePath.includes(
         "Rick Astley - Never Gonna Give You Up (Official Video)",
       ),
   );

@@ -2,6 +2,8 @@ import express, { type Request, type Response } from "express";
 import dotenv from "dotenv";
 import VideoDownloader from "./VideoDownloader.js";
 import VideoDownloadQueue from "./VideoDownloadQueue.js";
+import { Server } from "socket.io";
+import http from "http";
 
 dotenv.config();
 
@@ -12,12 +14,16 @@ const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR || "./downloads";
 const FFMPEG_DIR = process.env.FFMPEG_DIR || "";
 
 const app = express();
-const videodownLoader = new VideoDownloader(DOWNLOAD_DIR, FFMPEG_DIR);
-const videoDownloadQueue = new VideoDownloadQueue(videodownLoader);
+const server = http.createServer(app);
+
+const io = new Server(server);
 
 app.use(express.json());
 
-// Routes
+const videodownLoader = new VideoDownloader(DOWNLOAD_DIR, FFMPEG_DIR);
+const videoDownloadQueue = new VideoDownloadQueue(videodownLoader);
+
+// Web server
 app.get("/", (req: Request, res: Response) => {
   res.send({
     status: "up",
@@ -34,6 +40,7 @@ app.post("/api/downloads", (req: Request, res: Response) => {
     .push({ videoId })
     .on("finish", function (result) {
       console.log("Success", result);
+      io.emit("download-finished", { videoId });
     })
     .on("failed", function (err) {
       console.error("Failure", err);
@@ -45,6 +52,23 @@ app.post("/api/downloads", (req: Request, res: Response) => {
   });
 });
 
-app.listen(PORT, () => {
+// Web Socket connection
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("sync-event", (data) => {
+    socket.broadcast.emit("sync-event", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+
+  socket.on("download-finished", ({ videoId }) => {
+    console.log("Download finished:", videoId);
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });

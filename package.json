@@ -1,5 +1,5 @@
 {
-  "name": "youtubeoke-local",
+  "name": "ejkaraoke",
   "version": "1.0.0",
   "description": "",
   "license": "ISC",
@@ -10,12 +10,14 @@
     "build": "tsc",
     "cleanup": "tsc --build --clean",
     "start": "node dist/server.js",
-    "test:video-downloader": "npm run build && node --test tests/video-downloader.test.js"
+    "test:video-downloader": "npm run build && node --test tests/video-downloader.test.js",
+    "test:video-file-manager": "npm run build && node --test tests/video-file-manager.test.js"
   },
   "dependencies": {
     "better-queue": "^3.8.4",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
+    "socket.io": "^4.8.4",
     "ytdlp-nodejs": "^3.4.5"
   },
   "allowScripts": {
