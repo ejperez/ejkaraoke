@@ -1,15 +1,8 @@
-import { useLocation } from "react-router";
+import { useState } from "react";
 
 export default function useRemoteView() {
-  const location = useLocation();
+  const views = ["songbook", "search", "faves", "queue"];
+  const [currentView, setCurrentView] = useState("songbook");
 
-  const currentView = location.pathname.includes("/search")
-    ? "search"
-    : location.pathname.includes("/queue")
-      ? "queue"
-      : location.pathname.includes("/share")
-        ? "share"
-        : "faves";
-
-  return { currentView };
+  return { currentView, setCurrentView, views };
 }

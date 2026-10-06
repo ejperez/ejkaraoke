@@ -5,25 +5,53 @@ import { VIDEO_DIR_DELIMITER } from "./VideoDownloader.js";
 export type VideoFile = {
   videoId: string;
   channelName: string;
-  filePath: string;
+  fileName: string;
+};
+
+type VideoFileIndex = {
+  [key: string]: VideoFile;
 };
 
 class VideoFileManager {
-  #videos: VideoFile[] = [];
+  #videos: VideoFileIndex = {};
 
-  getVideos() {
-    return this.#videos;
+  getVideos(perPage?: number, currentPage?: number) {
+    const videos = Object.values(this.#videos).sort((a, b) =>
+      a.fileName.localeCompare(b.fileName, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      }),
+    );
+
+    if (perPage === undefined && currentPage === undefined) return videos;
+    if (perPage === undefined || currentPage === undefined) {
+      throw new TypeError("perPage and currentPage must be provided together.");
+    }
+    if (
+      !Number.isInteger(perPage) ||
+      perPage < 1 ||
+      !Number.isInteger(currentPage) ||
+      currentPage < 1
+    ) {
+      throw new RangeError(
+        "perPage and currentPage must be positive integers.",
+      );
+    }
+
+    const startIndex = (currentPage - 1) * perPage;
+    return videos.slice(startIndex, startIndex + perPage);
   }
 
   getVideo(id: string): VideoFile | undefined {
-    return this.#videos.filter((video) => video.videoId === id)[0];
+    return this.#videos[id];
   }
 
   async scan(videoDirectory: string): Promise<undefined> {
+    this.#videos = {};
+
     const directories = await readdir(videoDirectory, {
       withFileTypes: true,
     });
-    const videos: VideoFile[] = [];
 
     for (const directory of directories) {
       if (!directory.isDirectory()) continue;
@@ -49,11 +77,20 @@ class VideoFileManager {
         const [videoId = "", channelName = ""] =
           directory.name.split(VIDEO_DIR_DELIMITER);
 
-        videos.push({ videoId, channelName, filePath });
+        this.#videos[videoId] = { videoId, channelName, fileName: file.name };
       }
     }
 
-    this.#videos = videos;
+    this.#videos = Object.fromEntries(
+      Object.values(this.#videos)
+        .sort((a, b) =>
+          a.fileName.localeCompare(b.fileName, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          }),
+        )
+        .map((video) => [video.videoId, video]),
+    );
   }
 }
 

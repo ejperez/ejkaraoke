@@ -43,6 +43,17 @@ test("Can scan downloaded videos", async () => {
   assert.ok(videos && videos.length > 0);
 });
 
+test("Can paginate downloaded videos", () => {
+  const videos = videoFileMananger.getVideos();
+
+  assert.deepEqual(videoFileMananger.getVideos(2, 1), videos.slice(0, 2));
+  assert.deepEqual(videoFileMananger.getVideos(2, 2), videos.slice(2, 4));
+  assert.deepEqual(
+    videoFileMananger.getVideos(2, Math.ceil(videos.length / 2) + 1),
+    [],
+  );
+});
+
 test("Can get video by ID", async () => {
   const testId = "dQw4w9WgXcQ";
   const video = videoFileMananger.getVideo(testId);

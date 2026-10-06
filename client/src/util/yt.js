@@ -1,6 +1,6 @@
 import { decodeEntity } from "./util";
 
-const backendAPI = import.meta.env.VITE_YT_API_URL || "http://localhost:3030";
+const backendAPI = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 const mapFields = (items) =>
   items.map((item) => {

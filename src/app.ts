@@ -8,6 +8,7 @@ import createDownloadsRouter from "./routes/downloads.js";
 import healthRouter from "./routes/health.js";
 import searchRouter from "./routes/search.js";
 import registerSocketHandlers from "./socket.js";
+import { DOWNLOAD_DIR } from "./config.js";
 
 export const createApplication = (videoDownloadQueue: VideoDownloadQueue) => {
   const app = express();
@@ -17,11 +18,9 @@ export const createApplication = (videoDownloadQueue: VideoDownloadQueue) => {
   app.use(express.json());
   app.use(cors(corsOptions));
   app.use(healthRouter);
-  app.use(
-    "/api/downloads",
-    createDownloadsRouter(videoDownloadQueue, io),
-  );
+  app.use("/api/downloads", createDownloadsRouter(videoDownloadQueue, io));
   app.use("/api/search", searchRouter);
+  app.use("/static", express.static(DOWNLOAD_DIR));
 
   registerSocketHandlers(io);
 

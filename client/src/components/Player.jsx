@@ -28,7 +28,7 @@ export default function Player() {
     currentVideoRef,
     setHasError,
   });
-  const remoteLink = `${document.location.href}/remote`;
+  const remoteLink = `${document.location.href}remote`;
 
   return (
     <div className="flex flex-col h-screen">
