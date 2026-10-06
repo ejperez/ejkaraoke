@@ -15,9 +15,11 @@
   },
   "dependencies": {
     "better-queue": "^3.8.4",
+    "cors": "^2.8.6",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "socket.io": "^4.8.4",
+    "youtube-search-api": "^2.0.1",
     "ytdlp-nodejs": "^3.4.5"
   },
   "allowScripts": {
