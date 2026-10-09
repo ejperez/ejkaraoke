@@ -1,8 +1,10 @@
 import RemoteNav from "./RemoteNav";
 import useRemoteView from "../hooks/useRemoteView";
 import RemoteSongBook from "./RemoteSongBook";
+import useRemoteSync from "../hooks/useRemoteSync";
 
 export default function Remote() {
+  const { currentQueue, emitEvent } = useRemoteSync();
   const { currentView, setCurrentView, views } = useRemoteView();
 
   return (
@@ -18,7 +20,7 @@ export default function Remote() {
       </header>
 
       <div className="mt-14">
-        {currentView === "songbook" && <RemoteSongBook />}
+        {currentView === "songbook" && <RemoteSongBook {...{ emitEvent }} />}
       </div>
     </>
   );

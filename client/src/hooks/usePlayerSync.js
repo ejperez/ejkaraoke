@@ -48,10 +48,6 @@ export default function usePlayerSync({
   // Handle sync events from server
   useEffect(() => {
     socket.on("sync-event", (data) => {
-      if (String(playerID) !== String(data.payload.playerID)) {
-        return;
-      }
-
       console.log(data);
 
       switch (data.action) {
@@ -88,9 +84,9 @@ export default function usePlayerSync({
           playerInstance.current?.playVideo();
           broadcastQueue();
           break;
-        case "get-player-state":
-          handleStateChange();
-          break;
+        // case "get-player-state":
+        //   handleStateChange();
+        //   break;
       }
     });
 

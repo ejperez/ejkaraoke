@@ -4,6 +4,7 @@ export default function PlayerFrame({
   onEnd,
   onReady,
   onStateChange,
+  currentVideo,
 }) {
-  return <video />;
+  return <video src={currentVideo.filePath} autoPlay />;
 }

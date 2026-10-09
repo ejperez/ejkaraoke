@@ -37,10 +37,6 @@ button {
   @apply cursor-pointer;
 }
 
-input {
-  color: #000;
-}
-
 li.active {
   outline: solid 2px white;
 }

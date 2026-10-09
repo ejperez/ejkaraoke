@@ -2,23 +2,14 @@ import { decodeEntity } from "./util";
 
 const backendAPI = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
-const mapFields = (items) =>
-  items.map((item) => {
-    return {
-      id: item?.id,
-      title: decodeEntity(item?.title),
-      channel: item.channelTitle,
-      image: item.thumbnail.thumbnails.shift()?.url,
-      length: item.length.simpleText,
-    };
-  });
-
 const processResponse = (data) => {
   const hasNextPage = "nextPage" in data;
   let items = [];
 
   if (data.items.length > 0) {
-    items = mapFields(data.items);
+    items = data.items.map((item) => {
+      return { ...item, title: decodeEntity(item.title) };
+    });
   }
 
   if (hasNextPage) {

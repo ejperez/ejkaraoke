@@ -42,6 +42,7 @@ export default function Player() {
       ) : currentVideo ? (
         <>
           <PlayerFrame
+            currentVideo={currentVideo}
             videoID={currentVideo.id}
             onEnd={playNextInQueue}
             onError={handleOnError}
