@@ -17,10 +17,10 @@ class VideoDownloadQueue {
   #createQueue() {
     return new Queue(
       async (input: VideoDownloaderInput, cb) => {
-        const { videoId } = input;
+        const { id } = input;
 
-        console.log(`[Worker] Starting download: ${videoId}`);
-        const output = await this.downloader.download({ videoId });
+        console.log(`[Worker] Starting download: ${id}`);
+        const output = await this.downloader.download({ id });
 
         try {
           cb(null, output);

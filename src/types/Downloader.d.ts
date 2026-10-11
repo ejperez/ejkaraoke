@@ -19,11 +19,11 @@ export interface Downloader {
 }
 
 export type VideoDownloaderInput = {
-  videoId: string;
+  id: string;
   quality?: VideoQuality;
 };
 
 export type VideoDownloaderOutput = {
-  videoId: string;
+  id: string;
   filePath: string;
 };

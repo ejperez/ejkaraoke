@@ -1,6 +1,6 @@
-import ListItem from "./ListItem";
+import SearchListItem from "./SearchListItem";
 
-export default function List({
+export default function SearchList({
   items,
   selectedItem,
   menuOptions,
@@ -13,7 +13,7 @@ export default function List({
   return (
     <ul className="flex flex-col gap-2 overflow-x-hidden">
       {items.map((item) => (
-        <ListItem
+        <SearchListItem
           key={item.id}
           clickHandler={onSelect}
           item={item}

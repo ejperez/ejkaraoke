@@ -8,15 +8,15 @@ export default function usePlayerQueue() {
   const queueRef = useRef(queue);
   const currentVideoRef = useRef(currentVideo);
 
-  useEffect(() => {
-    const savedQueue = localStorage.getItem("queue");
+  // useEffect(() => {
+  //   const savedQueue = localStorage.getItem("queue");
 
-    if (savedQueue) {
-      setQueue(JSON.parse(savedQueue));
-    }
+  //   if (savedQueue) {
+  //     setQueue(JSON.parse(savedQueue));
+  //   }
 
-    setIsInitialLoad(false);
-  }, []);
+  //   setIsInitialLoad(false);
+  // }, []);
 
   useEffect(() => {
     if (isInitialLoad) return;

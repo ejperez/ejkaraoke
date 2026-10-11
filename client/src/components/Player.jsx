@@ -1,4 +1,3 @@
-import PlayerFrame from "./PlayerFrame";
 import PlayerHome from "./PlayerHome";
 import PlayerStatusBar from "./PlayerStatusBar";
 import PlayerError from "./PlayerError";
@@ -40,16 +39,12 @@ export default function Player() {
       {hasError ? (
         <PlayerError video={currentVideo} onSkip={handleSkip} />
       ) : currentVideo ? (
-        <>
-          <PlayerFrame
-            currentVideo={currentVideo}
-            videoID={currentVideo.id}
-            onEnd={playNextInQueue}
-            onError={handleOnError}
-            onReady={handleOnReady}
-            onStateChange={handleStateChange}
-          />
-        </>
+        <video
+          src={currentVideo.filePath}
+          autoPlay
+          onEnded={playNextInQueue}
+          onError={handleOnError}
+        />
       ) : (
         <PlayerHome remoteLink={remoteLink} />
       )}

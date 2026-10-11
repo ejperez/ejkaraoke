@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useOutletContext } from "react-router";
+import { useState, useContext } from "react";
+import { RemoteContext } from "../components/Remote";
 
 export default function useRemoteList() {
   const {
@@ -12,7 +12,7 @@ export default function useRemoteList() {
     addFave,
     isInFaves,
     removeFromFaves,
-  } = useOutletContext();
+  } = useContext(RemoteContext);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const queueIds = [...currentQueue, currentVideo]
     .map((item) => item?.id)

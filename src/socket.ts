@@ -30,8 +30,8 @@ const registerSocketHandlers = (
       console.log("User disconnected:", socket.id);
     });
 
-    socket.on("download-finished", ({ videoId }) => {
-      console.log("Download finished:", videoId);
+    socket.on("download-finished", ({ id }) => {
+      console.log("Download finished:", id);
     });
   });
 };

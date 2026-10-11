@@ -16,7 +16,7 @@ test("Can download a video", async () => {
     YTDLP_BINARY,
   );
   const result = await videoDownloader.download({
-    videoId: "dQw4w9WgXcQ",
+    id: "dQw4w9WgXcQ",
   });
 
   assert.ok(

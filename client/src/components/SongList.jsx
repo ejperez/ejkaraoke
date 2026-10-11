@@ -1,22 +1,27 @@
-export default function SongList({ songs, emitEvent }) {
-  const handlePlay = (id) => {
-    emitEvent("request-play-video", { id });
-  };
+import SongListItem from "./SongListItem";
+
+export default function SongList({
+  items,
+  selectedItem,
+  menuOptions,
+  onSelect,
+  emptyMessage = "No items",
+}) {
+  if (!items || (items && items.length === 0))
+    return <div className="italic">{emptyMessage}</div>;
+
+  console.log(items);
 
   return (
     <ul>
-      {songs.map((song) => (
-        <li key={song.videoId}>
-          {song.title} - {song.channelName}{" "}
-          <button
-            type="button"
-            onClick={() => {
-              handlePlay(song.videoId);
-            }}
-          >
-            Play
-          </button>
-        </li>
+      {items.map((item) => (
+        <SongListItem
+          key={item.id}
+          clickHandler={onSelect}
+          item={item}
+          isActive={item.id === selectedItem?.id}
+          options={menuOptions}
+        />
       ))}
     </ul>
   );

@@ -73,7 +73,7 @@ test("Can sort downloaded videos by title and creation date", async () => {
         await fs.stat(
           path.join(
             DOWNLOAD_DIR,
-            `${video.videoId}${VIDEO_DIR_DELIMITER}${video.channelName}`,
+            `${video.id}${VIDEO_DIR_DELIMITER}${video.channelName}`,
             `${video.title}.mp4`,
           ),
         )
@@ -107,11 +107,11 @@ test("Can get video by ID", async () => {
 
   console.log(video);
 
-  assert.ok(video && video.videoId === testId);
-  assert.deepEqual(Object.keys(video).sort(), ["filePath", "videoId"]);
+  assert.ok(video && video.id === testId);
+  assert.deepEqual(Object.keys(video).sort(), ["filePath", "id"]);
   const scannedVideo = videoFileMananger
     .getVideos()
-    .find(({ videoId }) => videoId === testId);
+    .find(({ id }) => id === testId);
   assert.ok(scannedVideo);
   const directoryName = `${testId}${VIDEO_DIR_DELIMITER}${scannedVideo.channelName}`;
   const fileName = `${scannedVideo.title}.mp4`;

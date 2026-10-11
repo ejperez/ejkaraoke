@@ -19,11 +19,11 @@ class VideoDownloader implements Downloader {
   }
 
   async download(input: VideoDownloaderInput) {
-    const { videoId, quality = "720p" } = input;
+    const { id, quality = "720p" } = input;
 
     try {
       const result = await ytdlp
-        .download(`https://youtube.com/watch?v=${videoId}`)
+        .download(`https://youtube.com/watch?v=${id}`)
         .format({ filter: "mergevideo", quality, type: "mp4" })
         .output(
           `${this.downloadDirectory}/%(id)s${VIDEO_DIR_DELIMITER}%(channel)s`,
@@ -35,7 +35,7 @@ class VideoDownloader implements Downloader {
       if (!filePath) return undefined;
 
       return {
-        videoId,
+        id,
         filePath,
       };
     } catch (e) {

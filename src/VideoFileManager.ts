@@ -6,13 +6,13 @@ import { VIDEO_DIR_DELIMITER } from "./VideoDownloader.js";
 type VideoSortOrder = "title" | "createdAt";
 
 export type VideoFile = {
-  videoId: string;
+  id: string;
   channelName: string;
   title: string;
 };
 
 export type VideoLocation = {
-  videoId: string;
+  id: string;
   filePath: string;
 };
 
@@ -51,8 +51,8 @@ class VideoFileManager {
         const createdAtDifference = b.createdAt - a.createdAt;
         return createdAtDifference || compareVideoTitles(a, b);
       })
-      .map(({ videoId, channelName, title }) => ({
-        videoId,
+      .map(({ id, channelName, title }) => ({
+        id,
         channelName,
         title,
       }));
@@ -80,7 +80,7 @@ class VideoFileManager {
     const video = this.#videos.get(id);
     if (!video) return undefined;
 
-    return { videoId: video.videoId, filePath: video.filePath };
+    return { id: video.id, filePath: video.filePath };
   }
 
   async #scan(videoDirectory: string): Promise<void> {
@@ -116,11 +116,11 @@ class VideoFileManager {
         }
 
         const fileStats = await stat(filePath);
-        const [videoId = "", channelName = ""] =
+        const [id = "", channelName = ""] =
           directory.name.split(VIDEO_DIR_DELIMITER);
 
-        this.#videos.set(videoId, {
-          videoId,
+        this.#videos.set(id, {
+          id,
           channelName,
           title: path.parse(file.name).name,
           filePath: videoUrl,

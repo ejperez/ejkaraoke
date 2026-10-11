@@ -32,7 +32,7 @@ export default function PlayerStatusBar({ currentVideo, queue, remoteLink }) {
           {isQRShown && (
             <div className="absolute right-0 top-6">
               <QRCode
-                className="p-0.5 size-28 bg-white rounded-xs"
+                className="p-1 size-28 bg-white rounded-sm"
                 value={remoteLink}
               />
             </div>

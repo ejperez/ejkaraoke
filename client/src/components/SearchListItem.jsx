@@ -1,6 +1,11 @@
 import { cn } from "../util/util";
 
-export default function ListItem({ item, clickHandler, isActive, options }) {
+export default function SearchListItem({
+  item,
+  clickHandler,
+  isActive,
+  options,
+}) {
   return (
     <li
       className={cn(

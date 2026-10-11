@@ -1,9 +1,12 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import useSongBook from "../hooks/useSongBook";
 import SongList from "./SongList";
+import useRemoteList from "../hooks/useRemoteList";
 
 export default function RemoteSongBook({ emitEvent }) {
   const { getRecent, songs, maxPages } = useSongBook();
+  const { searchMenuOptions, listClickHandler, selectedVideo } =
+    useRemoteList();
 
   useEffect(() => {
     getRecent();
@@ -17,8 +20,13 @@ export default function RemoteSongBook({ emitEvent }) {
         type="search"
         placeholder="Search title or artist"
       />
-      Recently added songs
-      <SongList {...{ songs, emitEvent }} />
+      <SongList
+        items={songs}
+        selectedItem={selectedVideo}
+        menuOptions={searchMenuOptions}
+        onSelect={listClickHandler}
+        emptyMessage="Nothing"
+      />
     </div>
   );
 }
