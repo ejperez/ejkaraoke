@@ -2,17 +2,8 @@ import { useState, useContext } from "react";
 import { RemoteContext } from "../components/Remote";
 
 export default function useRemoteList() {
-  const {
-    playerIsPlaying,
-    currentQueue,
-    currentVideo,
-    isQueueLoading,
-    emitEvent,
-    faves,
-    addFave,
-    isInFaves,
-    removeFromFaves,
-  } = useContext(RemoteContext);
+  const { playerIsPlaying, currentQueue, currentVideo, emitEvent } =
+    useContext(RemoteContext);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const queueIds = [...currentQueue, currentVideo]
     .map((item) => item?.id)
@@ -31,20 +22,10 @@ export default function useRemoteList() {
     label: "Play",
     action: (e) => {
       e.stopPropagation();
-      emitEvent("play-video", { video: selectedVideo });
-      emitEvent("remove-from-queue", { video: selectedVideo });
+      emitEvent("request-play-video", { id: selectedVideo.id });
+      // emitEvent("remove-from-queue", { video: selectedVideo });
       setSelectedVideo(null);
     },
-  };
-
-  const addToFavoritesOption = {
-    label: "Add to favorites",
-    action: (e) => {
-      addFave(selectedVideo);
-      e.stopPropagation();
-      setSelectedVideo(null);
-    },
-    isDisabled: selectedVideo && isInFaves(selectedVideo.id),
   };
 
   const addToQueueOption = {
@@ -52,7 +33,6 @@ export default function useRemoteList() {
     action: (e) => {
       e.stopPropagation();
       emitEvent("add-to-queue", { video: selectedVideo });
-      setSelectedVideo(null);
     },
     isDisabled: selectedVideo && queueIds.includes(selectedVideo.id),
   };
@@ -60,7 +40,6 @@ export default function useRemoteList() {
   // Build the menu options
   const queueMenuOptions = [
     playOption,
-    addToFavoritesOption,
     {
       label: "Remove from queue",
       action: (e) => {
@@ -92,38 +71,11 @@ export default function useRemoteList() {
         }
       },
     },
-    {
-      label: "Add to favorites",
-      action: (e) => {
-        addFave(currentVideo);
-        e.stopPropagation();
-        setSelectedVideo(null);
-      },
-      isDisabled: currentVideo && isInFaves(currentVideo.id),
-    },
     cancelOption,
   ];
 
-  const favesMenuOptions = [
-    playOption,
-    addToQueueOption,
-    {
-      label: "Remove from favorites",
-      action: (e) => {
-        removeFromFaves(selectedVideo.id);
-        e.stopPropagation();
-        setSelectedVideo(null);
-      },
-    },
-    cancelOption,
-  ];
-
-  const searchMenuOptions = [
-    playOption,
-    addToQueueOption,
-    addToFavoritesOption,
-    cancelOption,
-  ];
+  const searchMenuOptions = [playOption, addToQueueOption, cancelOption];
+  const songBookListItemOptions = [addToQueueOption];
 
   const listClickHandler = (item) => {
     setSelectedVideo(item);
@@ -135,10 +87,8 @@ export default function useRemoteList() {
     currentMenuOptions,
     currentQueue,
     currentVideo,
-    faves,
     selectedVideo,
-    favesMenuOptions,
     searchMenuOptions,
-    isQueueLoading,
+    songBookListItemOptions,
   };
 }

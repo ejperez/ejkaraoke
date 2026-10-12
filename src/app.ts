@@ -7,7 +7,6 @@ import type VideoFileManager from "./VideoFileManager.js";
 import { corsOptions } from "./config.js";
 import createDownloadsRouter from "./routes/downloads.js";
 import createSongsRouter from "./routes/songs.js";
-import healthRouter from "./routes/health.js";
 import searchRouter from "./routes/search.js";
 import registerSocketHandlers from "./socket.js";
 import { DOWNLOAD_DIR } from "./config.js";
@@ -24,7 +23,6 @@ export const createApplication = (
   app.use(cors(corsOptions));
 
   app.use("/", express.static("./frontend/dist"));
-  app.use("/api", healthRouter);
   app.use("/api/downloads", createDownloadsRouter(videoDownloadQueue, io));
   app.use("/api/search", searchRouter);
   app.use("/api/songs", createSongsRouter(videoFileManager));

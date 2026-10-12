@@ -13,14 +13,14 @@ const registerSocketHandlers = (
       socket.broadcast.emit("sync-event", data);
 
       switch (data.action) {
-        case "request-play-video":
-          const video = videoFileManager.getVideo(data.payload.id);
+        case "request-add-to-queue":
+          const video = videoFileManager.getVideo(data.payload.video.id);
 
           if (!video) return;
 
           socket.broadcast.emit("sync-event", {
-            action: "play-video",
-            payload: { video },
+            action: "add-to-queue",
+            payload: { video: { ...data.payload.video, ...video } },
           });
           break;
       }

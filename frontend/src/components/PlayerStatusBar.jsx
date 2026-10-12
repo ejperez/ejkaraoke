@@ -5,7 +5,7 @@ export default function PlayerStatusBar({ currentVideo, queue, remoteLink }) {
   const [isQRShown, setIsQRShown] = useState(false);
   return (
     <>
-      <div className="flex z-50 gap-1 justify-between p-1 w-full text-sm bg-black items-center">
+      <div className="flex z-50 gap-1 justify-between p-1 w-full text-sm bg-black items-center font-heading">
         <div className="flex w-full min-w-0 grow gap-1">
           {currentVideo && (
             <div className="truncate text-green-500">{currentVideo.title}</div>
@@ -24,7 +24,7 @@ export default function PlayerStatusBar({ currentVideo, queue, remoteLink }) {
             onClick={() => {
               setIsQRShown((isShown) => !isShown);
             }}
-            className="text-xs border px-2 rounded-2xl w-16"
+            className="text-xs border px-2 rounded-2xl w-18"
             type="button"
           >
             {isQRShown ? "Hide" : "Show"} QR

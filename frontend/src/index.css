@@ -1,18 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap&family=Bitcount+Prop+Single:wght@100..900&display=swap");
 
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Roboto Condensed", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 100;
-  font-style: normal;
-  font-variation-settings: "wdth" 100;
-  src: url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-}
-
 @theme {
   --font-text: "Roboto Condensed", sans-serif;
+  --font-heading: "Bitcount Prop Single", system-ui;
   --animate-slide: slide 3s ease-in-out infinite alternate;
 
   @keyframes slide {

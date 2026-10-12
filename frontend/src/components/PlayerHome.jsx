@@ -28,7 +28,7 @@ export default function PlayerHome({ playerID, remoteLink }) {
       <AnimatedBackground />
 
       <div className="z-2 text-center p-2">
-        <h1 className="text-center font-bold lg:text-7xl md:text-5xl text-4xl">
+        <h1 className="text-center lg:text-7xl md:text-5xl text-4xl font-heading">
           Welcome great singers!
         </h1>
         <p className="mt-2">

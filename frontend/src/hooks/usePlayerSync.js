@@ -56,11 +56,11 @@ export default function usePlayerSync({
           setHasError(false);
           break;
         case "add-to-queue": {
-          const queueIds = queueRef.current.map((item) => item.id);
+          // const queueIds = queueRef.current.map((item) => item.id);
 
-          if (queueIds.includes(data.payload.video.id)) {
-            return;
-          }
+          // if (queueIds.includes(data.payload.video.id)) {
+          //   return;
+          // }
 
           setQueue((queue) => [...queue, data.payload.video]);
           break;
