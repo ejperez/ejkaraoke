@@ -3,7 +3,7 @@ import path from "node:path";
 import { PORT } from "./config.js";
 import { VIDEO_DIR_DELIMITER } from "./VideoDownloader.js";
 
-type VideoSortOrder = "title" | "createdAt";
+export type VideoSortOrder = "title" | "createdAt";
 
 export type VideoFile = {
   id: string;
@@ -27,24 +27,33 @@ type StoredVideoFile = VideoFile & {
   createdAt: number;
 };
 
+type GetVideosParam = {
+  perPage?: number;
+  currentPage?: number;
+  sortBy?: VideoSortOrder;
+  search?: string;
+};
+
 class VideoFileManager {
   #videos = new Map<string, StoredVideoFile>();
   readonly ready: Promise<void>;
+  #getVideosMatchCount: number = 0;
 
   constructor(videoDirectory: string) {
     this.ready = this.#scan(videoDirectory);
   }
 
-  getVideos(
-    perPage?: number,
-    currentPage?: number,
-    sortBy: VideoSortOrder = "createdAt",
-  ) {
-    if (sortBy !== "title" && sortBy !== "createdAt") {
-      throw new TypeError('sortBy must be "title" or "createdAt".');
-    }
+  getVideosMatchCount(): number {
+    return this.#getVideosMatchCount;
+  }
 
-    const videos = Array.from(this.#videos.values())
+  getVideos({
+    perPage = 10,
+    currentPage = 1,
+    sortBy = "createdAt",
+    search = "",
+  }: GetVideosParam = {}): VideoFile[] {
+    let videos: VideoFile[] = Array.from(this.#videos.values())
       .sort((a, b) => {
         if (sortBy === "title") return compareVideoTitles(a, b);
 
@@ -57,10 +66,15 @@ class VideoFileManager {
         title,
       }));
 
-    if (perPage === undefined && currentPage === undefined) return videos;
-    if (perPage === undefined || currentPage === undefined) {
-      throw new TypeError("perPage and currentPage must be provided together.");
+    const searchTerm = search.toLowerCase();
+    if (search !== "") {
+      videos = videos.filter(
+        (video) =>
+          video.title.toLowerCase().includes(searchTerm) ||
+          video.channelName.toLocaleLowerCase().includes(searchTerm),
+      );
     }
+
     if (
       !Number.isInteger(perPage) ||
       perPage < 1 ||
@@ -73,6 +87,7 @@ class VideoFileManager {
     }
 
     const startIndex = (currentPage - 1) * perPage;
+    this.#getVideosMatchCount = videos.length;
     return videos.slice(startIndex, startIndex + perPage);
   }
 

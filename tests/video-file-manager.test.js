@@ -51,18 +51,35 @@ test("Can scan downloaded videos", async () => {
 test("Can paginate downloaded videos", () => {
   const videos = videoFileMananger.getVideos();
 
-  assert.deepEqual(videoFileMananger.getVideos(2, 1), videos.slice(0, 2));
-  assert.deepEqual(videoFileMananger.getVideos(2, 2), videos.slice(2, 4));
   assert.deepEqual(
-    videoFileMananger.getVideos(2, Math.ceil(videos.length / 2) + 1),
+    videoFileMananger.getVideos({ perPage: 2, currentPage: 1 }),
+    videos.slice(0, 2),
+  );
+  assert.deepEqual(
+    videoFileMananger.getVideos({ perPage: 2, currentPage: 2 }),
+    videos.slice(2, 4),
+  );
+  assert.deepEqual(
+    videoFileMananger.getVideos({
+      perPage: 2,
+      currentPage: Math.ceil(videos.length / 2) + 1,
+    }),
     [],
   );
 });
 
 test("Can sort downloaded videos by title and creation date", async () => {
-  const videos = videoFileMananger.getVideos(undefined, undefined, "title");
+  const videos = videoFileMananger.getVideos({
+    perPage: Number.MAX_SAFE_INTEGER,
+    currentPage: 1,
+    sortBy: "title",
+  });
   assert.deepEqual(
-    videoFileMananger.getVideos(undefined, undefined, "title"),
+    videoFileMananger.getVideos({
+      perPage: Number.MAX_SAFE_INTEGER,
+      currentPage: 1,
+      sortBy: "title",
+    }),
     videos,
   );
 
@@ -92,12 +109,26 @@ test("Can sort downloaded videos by title and creation date", async () => {
     .map(({ video }) => video);
 
   assert.deepEqual(
-    videoFileMananger.getVideos(undefined, undefined),
+    videoFileMananger.getVideos({
+      perPage: Number.MAX_SAFE_INTEGER,
+      currentPage: 1,
+    }),
     expectedCreatedAtOrder,
   );
   assert.deepEqual(
-    videoFileMananger.getVideos(2, 1),
+    videoFileMananger.getVideos({ perPage: 2, currentPage: 1 }),
     expectedCreatedAtOrder.slice(0, 2),
+  );
+});
+
+test("Defaults omitted video query fields", () => {
+  assert.deepEqual(
+    videoFileMananger.getVideos(),
+    videoFileMananger.getVideos({
+      perPage: 10,
+      currentPage: 1,
+      sortBy: "createdAt",
+    }),
   );
 });
 
@@ -110,7 +141,7 @@ test("Can get video by ID", async () => {
   assert.ok(video && video.id === testId);
   assert.deepEqual(Object.keys(video).sort(), ["filePath", "id"]);
   const scannedVideo = videoFileMananger
-    .getVideos()
+    .getVideos({ perPage: Number.MAX_SAFE_INTEGER })
     .find(({ id }) => id === testId);
   assert.ok(scannedVideo);
   const directoryName = `${testId}${VIDEO_DIR_DELIMITER}${scannedVideo.channelName}`;

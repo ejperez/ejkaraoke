@@ -18,6 +18,7 @@
     "cors": "^2.8.6",
     "dotenv": "^18.0.5",
     "express": "^5.2.1",
+    "react-icons": "^5.7.0",
     "socket.io": "^4.8.4",
     "youtube-search-api": "^2.0.1",
     "ytdlp-nodejs": "^3.4.5"

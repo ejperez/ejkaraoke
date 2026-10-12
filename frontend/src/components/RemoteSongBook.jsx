@@ -1,5 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import {
+  MdChevronLeft,
+  MdChevronRight,
   MdOutlinePlaylistAdd,
   MdOutlinePlaylistAddCheck,
 } from "react-icons/md";
@@ -28,26 +30,85 @@ function SongListItemOptions({ video }) {
   );
 }
 
-export default function RemoteSongBook() {
-  const { getRecent, songs, maxPages } = useSongBook();
-
-  useEffect(() => {
-    getRecent();
-  }, []);
+function SearchForm({ setCurrentSearch, setCurrentPage }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries());
+    setCurrentSearch(data.search);
+    setCurrentPage(1);
+  };
 
   return (
-    <div className="px-2">
+    <form onSubmit={handleSubmit} className="w-full">
       <input
         name="search"
-        className="border border-white"
+        className="border-2 border-white w-full rounded-2xl p-2"
         type="search"
         placeholder="Search title or artist"
+      />
+    </form>
+  );
+}
+
+function Pagination({ getSongs, currentPage, setCurrentPage, maxPages }) {
+  const handlePrevious = () => {
+    setCurrentPage((page) => page - 1);
+  };
+
+  const handleNext = () => {
+    setCurrentPage((page) => page + 1);
+  };
+
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <button
+        disabled={currentPage === 1}
+        onClick={handlePrevious}
+        type="button"
+        className="px-1 flex justify-center items-center rounded-2xl bg-white/30 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <MdChevronLeft size={20} /> Previous page
+      </button>
+      <button
+        disabled={currentPage === maxPages}
+        onClick={handleNext}
+        type="button"
+        className="px-1 flex justify-center items-center rounded-2xl bg-white/30 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        Next page <MdChevronRight size={20} />
+      </button>
+    </div>
+  );
+}
+
+export default function RemoteSongBook() {
+  const {
+    getSongs,
+    songs,
+    maxPages,
+    currentPage,
+    setCurrentPage,
+    currentSearch,
+    setCurrentSearch,
+  } = useSongBook();
+
+  return (
+    <div className="flex flex-col gap-2 px-2">
+      <SearchForm
+        {...{
+          getSongs,
+          currentSearch,
+          setCurrentSearch,
+          setCurrentPage,
+        }}
       />
       <SongList
         items={songs}
         OptionsElement={SongListItemOptions}
         emptyMessage="No downloaded songs yet"
       />
+      <Pagination {...{ getSongs, currentPage, setCurrentPage, maxPages }} />
     </div>
   );
 }
