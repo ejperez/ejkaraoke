@@ -23,7 +23,7 @@ export const createApplication = (
   app.use(express.json());
   app.use(cors(corsOptions));
 
-  app.use("/", express.static("./client/dist"));
+  app.use("/", express.static("./frontend/dist"));
   app.use("/api", healthRouter);
   app.use("/api/downloads", createDownloadsRouter(videoDownloadQueue, io));
   app.use("/api/search", searchRouter);
