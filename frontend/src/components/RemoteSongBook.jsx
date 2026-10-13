@@ -1,13 +1,16 @@
 import { useContext, useState } from "react";
+import { FaSortAlphaDown } from "react-icons/fa";
 import {
   MdChevronLeft,
   MdChevronRight,
   MdOutlinePlaylistAdd,
   MdOutlinePlaylistAddCheck,
+  MdDateRange,
 } from "react-icons/md";
 import { RemoteContext } from "../components/Remote";
 import useSongBook from "../hooks/useSongBook";
 import SongList from "./SongList";
+import { cn } from "../util/util";
 
 function SongListItemOptions({ video }) {
   const { emitEvent } = useContext(RemoteContext);
@@ -51,7 +54,7 @@ function SearchForm({ setCurrentSearch, setCurrentPage }) {
   );
 }
 
-function Pagination({ getSongs, currentPage, setCurrentPage, maxPages }) {
+function Pagination({ currentPage, setCurrentPage, maxPages }) {
   const handlePrevious = () => {
     setCurrentPage((page) => page - 1);
   };
@@ -82,6 +85,42 @@ function Pagination({ getSongs, currentPage, setCurrentPage, maxPages }) {
   );
 }
 
+function Sort({ currentSort, setCurrentSort, setCurrentPage }) {
+  const handleClick = (sort) => {
+    setCurrentPage(1);
+    setCurrentSort(sort);
+  };
+
+  return (
+    <div className="flex gap-1">
+      <button
+        type="button"
+        onClick={() => {
+          handleClick("title");
+        }}
+        className={cn(
+          "bg-white/10 w-10 rounded-2xl flex justify-center items-center",
+          { "bg-white/30": currentSort === "title" },
+        )}
+      >
+        <FaSortAlphaDown size={20} />
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          handleClick("createdAt");
+        }}
+        className={cn(
+          "bg-white/10 w-10 rounded-2xl flex justify-center items-center",
+          { "bg-white/30": currentSort === "createdAt" },
+        )}
+      >
+        <MdDateRange size={20} />
+      </button>
+    </div>
+  );
+}
+
 export default function RemoteSongBook() {
   const {
     getSongs,
@@ -91,18 +130,29 @@ export default function RemoteSongBook() {
     setCurrentPage,
     currentSearch,
     setCurrentSearch,
+    currentSort,
+    setCurrentSort,
   } = useSongBook();
 
   return (
     <div className="flex flex-col gap-2 px-2">
-      <SearchForm
-        {...{
-          getSongs,
-          currentSearch,
-          setCurrentSearch,
-          setCurrentPage,
-        }}
-      />
+      <div className="flex gap-2">
+        <SearchForm
+          {...{
+            getSongs,
+            currentSearch,
+            setCurrentSearch,
+            setCurrentPage,
+          }}
+        />
+        <Sort
+          {...{
+            currentSort,
+            setCurrentSort,
+            setCurrentPage,
+          }}
+        />
+      </div>
       <SongList
         items={songs}
         OptionsElement={SongListItemOptions}

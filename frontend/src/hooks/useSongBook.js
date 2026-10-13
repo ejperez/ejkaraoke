@@ -12,13 +12,13 @@ export default function useSongBook() {
 
   useEffect(() => {
     getSongs();
-  }, [currentPage, currentSearch]);
+  }, [currentPage, currentSearch, currentSort]);
 
   const getSongs = async () => {
     const paramsObj = {
       per_page: PER_PAGE,
       page: currentPage,
-      sortBy: currentSort,
+      sort: currentSort,
       search: currentSearch,
     };
     const queryString = new URLSearchParams(paramsObj).toString();
