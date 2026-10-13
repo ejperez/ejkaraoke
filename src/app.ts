@@ -23,7 +23,10 @@ export const createApplication = (
   app.use(cors(corsOptions));
 
   app.use("/", express.static("./frontend/dist"));
-  app.use("/api/downloads", createDownloadsRouter(videoDownloadQueue, io));
+  app.use(
+    "/api/downloads",
+    createDownloadsRouter(videoDownloadQueue, videoFileManager, io),
+  );
   app.use("/api/search", searchRouter);
   app.use("/api/songs", createSongsRouter(videoFileManager));
   app.use("/static/downloads", express.static(DOWNLOAD_DIR));

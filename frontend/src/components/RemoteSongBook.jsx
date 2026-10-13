@@ -8,7 +8,7 @@ import {
   MdDateRange,
 } from "react-icons/md";
 import { RemoteContext } from "../components/Remote";
-import useSongBook from "../hooks/useSongBook";
+import useRemoteSongBook from "../hooks/useRemoteSongBook";
 import SongList from "./SongList";
 import { cn } from "../util/util";
 
@@ -48,7 +48,7 @@ function SearchForm({ setCurrentSearch, setCurrentPage }) {
         name="search"
         className="border-2 border-white w-full rounded-2xl p-2"
         type="search"
-        placeholder="Search title or artist"
+        placeholder="Search title, artist or channel name"
       />
     </form>
   );
@@ -132,7 +132,7 @@ export default function RemoteSongBook() {
     setCurrentSearch,
     currentSort,
     setCurrentSort,
-  } = useSongBook();
+  } = useRemoteSongBook();
 
   return (
     <div className="flex flex-col gap-2 px-2">

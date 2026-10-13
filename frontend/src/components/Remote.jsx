@@ -1,8 +1,9 @@
-import RemoteNav from "./RemoteNav";
-import useRemoteView from "../hooks/useRemoteView";
-import RemoteSongBook from "./RemoteSongBook";
-import useRemoteSync from "../hooks/useRemoteSync";
 import { createContext } from "react";
+import useRemoteSync from "../hooks/useRemoteSync";
+import useRemoteView from "../hooks/useRemoteView";
+import RemoteNav from "./RemoteNav";
+import RemoteSearch from "./RemoteSearch";
+import RemoteSongBook from "./RemoteSongBook";
 
 export const RemoteContext = createContext();
 
@@ -30,8 +31,9 @@ export default function Remote() {
         />
       </header>
 
-      <div className="mt-14">
+      <div className="mt-12">
         {currentView === "songbook" && <RemoteSongBook />}
+        {currentView === "search" && <RemoteSearch />}
       </div>
     </RemoteContext.Provider>
   );

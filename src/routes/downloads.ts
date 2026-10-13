@@ -1,26 +1,38 @@
 import { Router } from "express";
 import type { Server } from "socket.io";
 import type VideoDownloadQueue from "../VideoDownloadQueue.js";
+import type VideoFileManager from "../VideoFileManager.js";
 
 const createDownloadsRouter = (
   videoDownloadQueue: VideoDownloadQueue,
+  videoFileManager: VideoFileManager,
   io: Server,
 ) => {
   const router = Router();
 
   router.post("/", (req, res) => {
-    const { id }: { id: string } = req.body;
+    const {
+      id,
+      add_to_queue: addToQueue,
+    }: { id: string; add_to_queue?: boolean } = req.body;
     if (!id) return res.status(400).json({ error: "id is required" });
 
     videoDownloadQueue
       .getQueue()
       .push({ id })
-      .on("finish", function (result) {
+      .on("finish", async function (result) {
         console.log("Success", result);
         io.emit("sync-event", {
           action: "download-finished",
           payload: { id },
         });
+
+        await videoFileManager.scan();
+
+        if (addToQueue) {
+          console.log(videoFileManager.getVideo(id));
+          // emit add to queue
+        }
       })
       .on("failed", function (err) {
         console.error("Failure", err);

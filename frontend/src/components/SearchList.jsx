@@ -2,9 +2,7 @@ import SearchListItem from "./SearchListItem";
 
 export default function SearchList({
   items,
-  selectedItem,
-  menuOptions,
-  onSelect,
+  OptionsElement,
   emptyMessage = "No items",
 }) {
   if (!items || (items && items.length === 0))
@@ -15,10 +13,8 @@ export default function SearchList({
       {items.map((item) => (
         <SearchListItem
           key={item.id}
-          clickHandler={onSelect}
           item={item}
-          isActive={item.id === selectedItem?.id}
-          options={menuOptions}
+          OptionsElement={OptionsElement}
         />
       ))}
     </ul>

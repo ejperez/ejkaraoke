@@ -38,9 +38,11 @@ class VideoFileManager {
   #videos = new Map<string, StoredVideoFile>();
   readonly ready: Promise<void>;
   #getVideosMatchCount: number = 0;
+  #videoDirectory: string;
 
   constructor(videoDirectory: string) {
-    this.ready = this.#scan(videoDirectory);
+    this.#videoDirectory = videoDirectory;
+    this.ready = this.scan();
   }
 
   getVideosMatchCount(): number {
@@ -98,17 +100,17 @@ class VideoFileManager {
     return { id: video.id, filePath: video.filePath };
   }
 
-  async #scan(videoDirectory: string): Promise<void> {
+  async scan(): Promise<void> {
     this.#videos.clear();
 
-    const directories = await readdir(videoDirectory, {
+    const directories = await readdir(this.#videoDirectory, {
       withFileTypes: true,
     });
 
     for (const directory of directories) {
       if (!directory.isDirectory()) continue;
 
-      const directoryPath = path.join(videoDirectory, directory.name);
+      const directoryPath = path.join(this.#videoDirectory, directory.name);
 
       const files = await readdir(directoryPath, { withFileTypes: true });
 

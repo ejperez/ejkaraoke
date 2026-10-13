@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 
-const BACKEND_API = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+const BACKEND_API =
+  (import.meta.env.VITE_BACKEND_URL || "http://localhost:3000") + "/api/songs";
 const PER_PAGE = 5;
 
-export default function useSongBook() {
+export default function useRemoteSongBook() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentSort, setCurrentSort] = useState("createdAt");
   const [currentSearch, setCurrentSearch] = useState("");
@@ -22,7 +23,7 @@ export default function useSongBook() {
       search: currentSearch,
     };
     const queryString = new URLSearchParams(paramsObj).toString();
-    const response = await fetch(`${BACKEND_API}/api/songs?${queryString}`);
+    const response = await fetch(`${BACKEND_API}?${queryString}`);
     const result = await response.json();
 
     setSongs(result.data);
