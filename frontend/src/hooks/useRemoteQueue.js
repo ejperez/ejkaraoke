@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
-import { emitRemoteEvent, socket } from "../util/socket";
+import { emitEvent, socket } from "../util/socket";
 
-export default function useRemoteSync() {
+export default function useRemoteQueue() {
   const [currentQueue, setCurrentQueue] = useState([]);
   const [isQueueLoading, setIsQueueLoading] = useState(true);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [playerIsPlaying, setPlayerIsPlaying] = useState(null);
-
-  const emitEvent = (action, payload) => {
-    emitRemoteEvent(socket, action, payload);
-  };
 
   useEffect(() => {
     socket.on("sync-event", (data) => {
@@ -38,10 +34,9 @@ export default function useRemoteSync() {
   }, []);
 
   return {
-    playerIsPlaying,
     currentQueue,
     currentVideo,
+    playerIsPlaying,
     isQueueLoading,
-    emitEvent,
   };
 }

@@ -1,23 +1,60 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { socket } from "../util/socket";
 
-export default function usePlayerSync({
-  playerID,
-  queue,
-  currentVideo,
-  setCurrentVideo,
-  setQueue,
-  queueRef,
-  currentVideoRef,
-  setHasError,
-}) {
+export default function usePlayer() {
+  const [currentVideo, setCurrentVideo] = useState(null);
+  const [queue, setQueue] = useState([]);
+  const [hasError, setHasError] = useState(false);
+  // const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const queueRef = useRef(queue);
+  const currentVideoRef = useRef(currentVideo);
   const playerInstance = useRef(null);
+
+  // useEffect(() => {
+  //   const savedQueue = localStorage.getItem("queue");
+
+  //   if (savedQueue) {
+  //     setQueue(JSON.parse(savedQueue));
+  //   }
+
+  //   setIsInitialLoad(false);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (isInitialLoad) return;
+
+  //   localStorage.setItem("queue", JSON.stringify([currentVideo, ...queue]));
+  // }, [queue, currentVideo, isInitialLoad]);
+
+  const playNextInQueue = () => {
+    if (queue.length > 0) {
+      setCurrentVideo(queue[0]);
+      setQueue((queue) => queue.slice(1));
+    } else {
+      setCurrentVideo(null);
+    }
+  };
+
+  // Autoplay first item in queue if nothing is playing
+  useEffect(() => {
+    if (!currentVideo) {
+      playNextInQueue();
+    }
+  }, [queue, currentVideo]);
+
+  const handleOnError = () => {
+    setHasError(true);
+  };
+
+  const handleSkip = () => {
+    playNextInQueue();
+    setHasError(false);
+  };
 
   const broadcastQueue = () => {
     socket.emit("sync-event", {
       action: "current-queue",
       payload: {
-        playerID: playerID,
         queue: queueRef.current,
         currentVideo: currentVideoRef.current,
       },
@@ -32,7 +69,6 @@ export default function usePlayerSync({
     socket.emit("sync-event", {
       action: "player-status-changed",
       payload: {
-        playerID: playerID,
         isPlaying:
           playerInstance.current.getPlayerState() ===
           window.YT.PlayerState.PLAYING,
@@ -40,12 +76,12 @@ export default function usePlayerSync({
     });
   };
 
-  // Broadcast queue and current video to server
   useEffect(() => {
+    queueRef.current = queue;
+    currentVideoRef.current = currentVideo;
     broadcastQueue();
-  }, [queue, currentVideo, playerID]);
+  }, [queue, currentVideo]);
 
-  // Handle sync events from server
   useEffect(() => {
     socket.on("sync-event", (data) => {
       console.log(data);
@@ -56,12 +92,6 @@ export default function usePlayerSync({
           setHasError(false);
           break;
         case "add-to-queue": {
-          // const queueIds = queueRef.current.map((item) => item.id);
-
-          // if (queueIds.includes(data.payload.video.id)) {
-          //   return;
-          // }
-
           setQueue((queue) => [...queue, data.payload.video]);
           break;
         }
@@ -96,6 +126,17 @@ export default function usePlayerSync({
   }, []);
 
   return {
+    currentVideo,
+    setCurrentVideo,
+    queue,
+    setQueue,
+    hasError,
+    setHasError,
+    queueRef,
+    currentVideoRef,
+    playNextInQueue,
+    handleOnError,
+    handleSkip,
     handleOnReady,
     handleStateChange,
   };

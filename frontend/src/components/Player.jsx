@@ -1,32 +1,17 @@
 import PlayerHome from "./PlayerHome";
 import PlayerStatusBar from "./PlayerStatusBar";
 import PlayerError from "./PlayerError";
-import usePlayerQueue from "../hooks/usePlayerQueue";
-import usePlayerSync from "../hooks/usePlayerSync";
+import usePlayer from "../hooks/usePlayer";
 
 export default function Player() {
   const {
     currentVideo,
-    setCurrentVideo,
     queue,
-    setQueue,
     hasError,
-    setHasError,
-    queueRef,
-    currentVideoRef,
     playNextInQueue,
     handleOnError,
     handleSkip,
-  } = usePlayerQueue();
-  const { handleOnReady, handleStateChange } = usePlayerSync({
-    queue,
-    currentVideo,
-    setCurrentVideo,
-    setQueue,
-    queueRef,
-    currentVideoRef,
-    setHasError,
-  });
+  } = usePlayer();
   const remoteLink = `${document.location.href}remote`;
 
   return (

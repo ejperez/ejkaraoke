@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { FaSortAlphaDown } from "react-icons/fa";
 import {
   MdChevronLeft,
@@ -7,29 +7,34 @@ import {
   MdOutlinePlaylistAddCheck,
   MdDateRange,
 } from "react-icons/md";
-import { RemoteContext } from "../components/Remote";
 import useRemoteSongBook from "../hooks/useRemoteSongBook";
 import SongList from "./SongList";
 import { cn } from "../util/util";
+import { emitEvent } from "../util/socket";
 
 function SongListItemOptions({ video }) {
-  const { emitEvent } = useContext(RemoteContext);
   const [isClicked, setIsClicked] = useState(false);
 
   return (
-    <button type="button" className="flex justify-center items-center size-12">
-      {isClicked ? (
-        <MdOutlinePlaylistAddCheck size={30} color="green" />
-      ) : (
-        <MdOutlinePlaylistAdd
-          size={30}
-          onClick={() => {
-            emitEvent("request-add-to-queue", { video });
-            setIsClicked(true);
-          }}
-        />
-      )}
-    </button>
+    <div className="flex justify-end items-center grow">
+      <button
+        type="button"
+        disabled={isClicked}
+        className="flex items-center justify-center size-12"
+      >
+        {isClicked ? (
+          <MdOutlinePlaylistAddCheck className="w-10" size={30} color="green" />
+        ) : (
+          <MdOutlinePlaylistAdd
+            size={30}
+            onClick={() => {
+              emitEvent("request-add-to-queue", { video });
+              setIsClicked(true);
+            }}
+          />
+        )}
+      </button>
+    </div>
   );
 }
 
