@@ -70,24 +70,26 @@ export default function useRemoteSearch() {
   const [searchTerm, setSearchTerm] = useState("");
   const [items, setItems] = useState([]);
   const [hasNextPage, setHasNextPage] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true);
-
     async function doSearch() {
       if (searchTerm === "") return;
+
+      setIsLoadingSearch(true);
 
       try {
         const result = await search(searchTerm);
 
         setItems(result.items);
         setHasNextPage(result.hasNextPage);
-        setIsLoading(false);
       } catch (error) {
         setError(error.message);
       }
+
+      setIsLoadingSearch(false);
     }
 
     doSearch();
@@ -95,7 +97,7 @@ export default function useRemoteSearch() {
 
   const loadMoreHandler = async () => {
     setError(null);
-    setIsLoading(true);
+    setIsLoadingMore(true);
 
     try {
       const { items, hasNextPage } = await getNextPage();
@@ -117,14 +119,15 @@ export default function useRemoteSearch() {
       setError(error.message);
     }
 
-    setIsLoading(false);
+    setIsLoadingMore(false);
   };
 
   return {
     loadMoreHandler,
     items,
     hasNextPage,
-    isLoading,
+    isLoadingMore,
+    isLoadingSearch,
     error,
     searchTerm,
     setSearchTerm,

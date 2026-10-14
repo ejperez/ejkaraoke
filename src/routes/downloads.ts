@@ -21,7 +21,6 @@ const createDownloadsRouter = (
       .getQueue()
       .push({ id })
       .on("finish", async function (result) {
-        console.log("Success", result);
         io.emit("sync-event", {
           action: "download-finished",
           payload: { id },
@@ -30,8 +29,12 @@ const createDownloadsRouter = (
         await videoFileManager.scan();
 
         if (addToQueue) {
-          console.log(videoFileManager.getVideo(id));
-          // emit add to queue
+          const video = videoFileManager.getVideo(id);
+
+          io.emit("sync-event", {
+            action: "add-to-queue",
+            payload: { video },
+          });
         }
       })
       .on("failed", function (err) {

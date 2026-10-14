@@ -3,59 +3,48 @@ import {
   MdDownload,
   MdDownloadDone,
   MdOutlinePlaylistAdd,
-  MdOutlinePlaylistAddCheck,
+  MdOutlineDownloading,
 } from "react-icons/md";
 import useRemoteSearch from "../hooks/useRemoteSearch";
 import ErrorComponent from "./ErrorComponent";
 import SearchList from "./SearchList";
 import useRemoteDownloads from "../hooks/useRemoteDownloads";
 
-function DownloadAndQueueOption({ video, download }) {
+function SearchListItemOptions({ video }) {
+  const { download, latestDownloadedId } = useRemoteDownloads();
+
   const [isClicked, setIsClicked] = useState(false);
 
-  return (
-    <button type="button" className="flex justify-center items-center size-12">
-      {isClicked ? (
-        <MdOutlinePlaylistAddCheck size={30} color="green" />
-      ) : (
-        <MdOutlinePlaylistAdd
-          size={30}
-          onClick={() => {
-            // emitEvent("request-download-add-to-queue", { video });
-            setIsClicked(true);
-          }}
-        />
-      )}
-    </button>
-  );
-}
+  const handleClick = async (addToQueue = false) => {
+    await download(video.id, addToQueue);
 
-function DownloadOption({ video, download }) {
-  const [isClicked, setIsClicked] = useState(false);
-  const handleClick = async () => {
-    await download(video.id);
     setIsClicked(true);
   };
 
   return (
-    <button type="button" className="flex justify-center items-center size-12">
-      {isClicked ? (
+    <div className="flex justify-center items-center grow">
+      {latestDownloadedId === video.id && isClicked ? (
         <MdDownloadDone size={30} color="green" />
+      ) : isClicked ? (
+        <MdOutlineDownloading size={30} color="orange" />
       ) : (
-        <MdDownload size={30} onClick={handleClick} />
+        <>
+          <button
+            type="button"
+            className="size-12"
+            onClick={() => {
+              handleClick(true);
+            }}
+          >
+            <MdOutlinePlaylistAdd size={30} />
+          </button>
+
+          <button type="button" className="size-12" onClick={handleClick}>
+            <MdDownload size={30} />
+          </button>
+        </>
       )}
-    </button>
-  );
-}
-
-function SearchListItemOptions({ video }) {
-  const { download } = useRemoteDownloads();
-
-  return (
-    <>
-      <DownloadAndQueueOption {...{ video, download }} />
-      <DownloadOption {...{ video, download }} />
-    </>
+    </div>
   );
 }
 
@@ -87,9 +76,9 @@ export default function RemoteSearch() {
     loadMoreHandler,
     items,
     hasNextPage,
-    isLoading,
+    isLoadingMore,
+    isLoadingSearch,
     error,
-    searchTerm,
     setSearchTerm,
   } = useRemoteSearch();
 
@@ -97,9 +86,11 @@ export default function RemoteSearch() {
     <div className="px-2">
       <SearchForm {...{ setSearchTerm }} />
       <div className="mt-2">
-        {searchTerm !== "" && items.length === 0 && !isLoading ? (
+        {items.length === 0 && !isLoadingMore && !isLoadingSearch ? (
           <div className="pb-2 text-sm font-bold">NO RESULTS</div>
-        ) : searchTerm === "" ? null : (
+        ) : isLoadingSearch ? (
+          <div className="my-2 h-10">Loading results...</div>
+        ) : (
           <>
             <div className="pb-2 text-sm font-bold">SEARCH RESULTS</div>
 
@@ -111,18 +102,18 @@ export default function RemoteSearch() {
               OptionsElement={SearchListItemOptions}
             />
 
-            {hasNextPage && !isLoading && (
+            {hasNextPage && !isLoadingMore && (
               <button
                 className="w-full p-2 bg-white/30 my-2 rounded-2xl"
                 type="button"
                 onClick={loadMoreHandler}
-                disabled={isLoading}
+                disabled={isLoadingMore}
               >
                 Load more
               </button>
             )}
 
-            {isLoading && <div className="my-2 h-10">Loading more...</div>}
+            {isLoadingMore && <div className="my-2 h-10">Loading more...</div>}
 
             {error && <ErrorComponent className="mt-2" message={error} />}
           </>

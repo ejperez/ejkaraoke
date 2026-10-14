@@ -49,7 +49,10 @@ test("Can scan downloaded videos", async () => {
 });
 
 test("Can paginate downloaded videos", () => {
-  const videos = videoFileMananger.getVideos();
+  const videos = videoFileMananger.getVideos({
+    perPage: Number.MAX_SAFE_INTEGER,
+    currentPage: 1,
+  });
 
   assert.deepEqual(
     videoFileMananger.getVideos({ perPage: 2, currentPage: 1 }),
@@ -136,21 +139,26 @@ test("Can get video by ID", async () => {
   const testId = "dQw4w9WgXcQ";
   const video = videoFileMananger.getVideo(testId);
 
-  console.log(video);
-
   assert.ok(video && video.id === testId);
-  assert.deepEqual(Object.keys(video).sort(), ["filePath", "id"]);
   const scannedVideo = videoFileMananger
     .getVideos({ perPage: Number.MAX_SAFE_INTEGER })
     .find(({ id }) => id === testId);
   assert.ok(scannedVideo);
   const directoryName = `${testId}${VIDEO_DIR_DELIMITER}${scannedVideo.channelName}`;
   const fileName = `${scannedVideo.title}.mp4`;
-  assert.equal(
-    video.filePath,
-    new URL(
-      `/static/downloads/${encodeURIComponent(directoryName)}/${encodeURIComponent(fileName)}`,
-      `http://localhost:${process.env.PORT || 3000}`,
-    ).toString(),
+  const filePath = new URL(
+    `/static/downloads/${encodeURIComponent(directoryName)}/${encodeURIComponent(fileName)}`,
+    `http://localhost:${process.env.PORT || 3000}`,
+  ).toString();
+  const { birthtimeMs: createdAt } = await fs.stat(
+    path.join(DOWNLOAD_DIR, directoryName, fileName),
   );
+
+  assert.deepEqual(video, {
+    id: testId,
+    channelName: scannedVideo.channelName,
+    title: scannedVideo.title,
+    filePath,
+    createdAt,
+  });
 });

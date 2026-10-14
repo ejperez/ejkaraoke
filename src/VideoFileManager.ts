@@ -1,4 +1,4 @@
-import { readdir, stat, unlink } from "node:fs/promises";
+import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { PORT } from "./config.js";
 import { VIDEO_DIR_DELIMITER } from "./VideoDownloader.js";
@@ -93,11 +93,11 @@ class VideoFileManager {
     return videos.slice(startIndex, startIndex + perPage);
   }
 
-  getVideo(id: string): VideoLocation | undefined {
+  getVideo(id: string): StoredVideoFile | undefined {
     const video = this.#videos.get(id);
     if (!video) return undefined;
 
-    return { id: video.id, filePath: video.filePath };
+    return video;
   }
 
   async scan(): Promise<void> {
