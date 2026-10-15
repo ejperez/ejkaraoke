@@ -46,3 +46,29 @@ li.active {
     transform: rotate(360deg);
   }
 }
+
+.marquee-viewport {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee-text {
+  display: inline-block;
+  font-weight: bold;
+}
+
+.marquee-text.is-overflowing:active {
+  animation: marquee var(--marquee-duration) linear infinite alternate;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(calc(0px - var(--marquee-distance)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-text.is-overflowing:hover {
+    animation: none;
+  }
+}

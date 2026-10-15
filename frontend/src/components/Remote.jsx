@@ -9,7 +9,7 @@ export default function Remote() {
 
   return (
     <>
-      <header className="flex fixed top-0 z-1 w-full bg-black/50 py-1 px-2 gap-1">
+      <header>
         <RemoteNav
           {...{
             currentView,
@@ -20,9 +20,9 @@ export default function Remote() {
       </header>
 
       <div className="mt-12">
-        {currentView === "songbook" && <RemoteSongBook />}
-        {currentView === "search" && <RemoteSearch />}
-        {currentView === "queue" && <RemoteQueue />}
+        {currentView === "Song Book" && <RemoteSongBook />}
+        {currentView === "Search" && <RemoteSearch />}
+        {currentView === "Queue" && <RemoteQueue />}
       </div>
     </>
   );

@@ -8,19 +8,23 @@ export default function Player() {
 
   return (
     <div className="flex flex-col h-screen">
-      <PlayerStatusBar
-        currentVideo={currentVideo}
-        queue={queue}
-        remoteLink={remoteLink}
-      />
-      {currentVideo ? (
-        <video
-          src={currentVideo.filePath}
-          autoPlay
-          controls
-          onEnded={playNextInQueue}
-          ref={videoPlayerRef}
+      {currentVideo && (
+        <PlayerStatusBar
+          currentVideo={currentVideo}
+          queue={queue}
+          remoteLink={remoteLink}
         />
+      )}
+      {currentVideo ? (
+        <div className="flex justify-center items-center h-full">
+          <video
+            src={currentVideo.filePath}
+            autoPlay
+            controls
+            onEnded={playNextInQueue}
+            ref={videoPlayerRef}
+          />
+        </div>
       ) : (
         <PlayerHome remoteLink={remoteLink} />
       )}

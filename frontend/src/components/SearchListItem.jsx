@@ -1,3 +1,5 @@
+import MarqueeTitle from "./MarqueeTitle";
+
 export default function SearchListItem({ item, OptionsElement }) {
   return (
     <li className="flex gap-2 relative rounded-2xl bg-white/20 w-full p-2">
@@ -14,8 +16,8 @@ export default function SearchListItem({ item, OptionsElement }) {
           {item.length}
         </div>
       </div>
-      <div className="w-3/4 text-left">
-        <p className="line-clamp-1 font-text font-bold">{item.title}</p>
+      <div className="w-3/4 text-left min-w-0">
+        <MarqueeTitle title={item.title} />
         <em className="line-clamp-1 text-xs">{item.channel}</em>
       </div>
 

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 export default function useRemoteView() {
-  const views = ["songbook", "search", "queue"];
-  const [currentView, setCurrentView] = useState("queue");
+  const views = ["Song Book", "Search", "Queue"];
+  const [currentView, setCurrentView] = useState("Song Book");
 
   return { currentView, setCurrentView, views };
 }

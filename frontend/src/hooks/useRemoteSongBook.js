@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 const BACKEND_API =
   (import.meta.env.VITE_BACKEND_URL || "http://localhost:3000") + "/api/songs";
-const PER_PAGE = 5;
+const PER_PAGE = 10;
 
 export default function useRemoteSongBook() {
   const [currentPage, setCurrentPage] = useState(1);
