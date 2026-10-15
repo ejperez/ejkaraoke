@@ -26,7 +26,8 @@
     "ytdlp-nodejs": "^3.4.5"
   },
   "allowScripts": {
-    "ytdlp-nodejs@3.4.5": true
+    "ytdlp-nodejs@3.4.5": true,
+    "esbuild@0.28.2": true
   },
   "devDependencies": {
     "@types/better-queue": "^3.8.6",
