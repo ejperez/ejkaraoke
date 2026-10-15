@@ -1,9 +1,10 @@
 import { YtDlp } from "ytdlp-nodejs";
+import { VIDEO_DIR_DELIMITER } from "./video-constants.js";
 import type { Downloader, VideoDownloaderInput } from "./types/Downloader.js";
 
 const ytdlp = new YtDlp();
 
-export const VIDEO_DIR_DELIMITER = "[^_-]";
+export { VIDEO_DIR_DELIMITER };
 
 class VideoDownloader implements Downloader {
   downloadDirectory: string;

@@ -10,6 +10,8 @@
     "build": "tsc",
     "cleanup": "tsc --build --clean",
     "start": "node dist/server.js",
+    "import-videos": "npm run build && node scripts/import-videos.js",
+    "test:import-videos": "npm run build && node --test tests/import-videos.test.js",
     "test:video-downloader": "npm run build && node --test tests/video-downloader.test.js",
     "test:video-file-manager": "npm run build && node --test tests/video-file-manager.test.js"
   },

@@ -1,7 +1,7 @@
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { PORT } from "./config.js";
-import { VIDEO_DIR_DELIMITER } from "./VideoDownloader.js";
+import { VIDEO_DIR_DELIMITER } from "./video-constants.js";
 
 export type VideoSortOrder = "title" | "createdAt";
 
