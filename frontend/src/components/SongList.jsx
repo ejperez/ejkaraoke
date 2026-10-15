@@ -12,7 +12,7 @@ export default function SongList({
     <ul className="flex flex-col gap-2 overflow-x-hidden">
       {items.map((item) => (
         <SongListItem
-          key={item.id}
+          key={item.id + (item?.index || "")}
           item={item}
           OptionsElement={OptionsElement}
         />

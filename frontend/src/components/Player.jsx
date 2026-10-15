@@ -1,17 +1,9 @@
 import PlayerHome from "./PlayerHome";
 import PlayerStatusBar from "./PlayerStatusBar";
-import PlayerError from "./PlayerError";
 import usePlayer from "../hooks/usePlayer";
 
 export default function Player() {
-  const {
-    currentVideo,
-    queue,
-    hasError,
-    playNextInQueue,
-    handleOnError,
-    handleSkip,
-  } = usePlayer();
+  const { currentVideo, queue, playNextInQueue, videoPlayerRef } = usePlayer();
   const remoteLink = `${document.location.href}remote`;
 
   return (
@@ -21,14 +13,13 @@ export default function Player() {
         queue={queue}
         remoteLink={remoteLink}
       />
-      {hasError ? (
-        <PlayerError video={currentVideo} onSkip={handleSkip} />
-      ) : currentVideo ? (
+      {currentVideo ? (
         <video
           src={currentVideo.filePath}
           autoPlay
+          controls
           onEnded={playNextInQueue}
-          onError={handleOnError}
+          ref={videoPlayerRef}
         />
       ) : (
         <PlayerHome remoteLink={remoteLink} />

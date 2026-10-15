@@ -1,14 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { socket } from "../util/socket";
 
 export default function usePlayer() {
   const [currentVideo, setCurrentVideo] = useState(null);
-  const [queue, setQueue] = useState([]);
-  const [hasError, setHasError] = useState(false);
+  const [queue, setQueueState] = useState([]);
+  const setQueue = useCallback((nextQueue) => {
+    setQueueState((currentQueue) => {
+      const updatedQueue =
+        typeof nextQueue === "function" ? nextQueue(currentQueue) : nextQueue;
+
+      return updatedQueue.map((item, index) => ({ ...item, index }));
+    });
+  }, []);
   // const [isInitialLoad, setIsInitialLoad] = useState(true);
   const queueRef = useRef(queue);
   const currentVideoRef = useRef(currentVideo);
-  const playerInstance = useRef(null);
+  const videoPlayerRef = useRef(null);
 
   // useEffect(() => {
   //   const savedQueue = localStorage.getItem("queue");
@@ -42,15 +49,6 @@ export default function usePlayer() {
     }
   }, [queue, currentVideo]);
 
-  const handleOnError = () => {
-    setHasError(true);
-  };
-
-  const handleSkip = () => {
-    playNextInQueue();
-    setHasError(false);
-  };
-
   const broadcastQueue = () => {
     socket.emit("sync-event", {
       action: "current-queue",
@@ -61,20 +59,24 @@ export default function usePlayer() {
     });
   };
 
-  const handleOnReady = (e) => {
-    playerInstance.current = e.target;
+  const isVideoPlayerPlaying = () => {
+    if (!videoPlayerRef.current) return false;
+
+    return !videoPlayerRef.current.paused && !videoPlayerRef.current.ended;
   };
 
-  const handleStateChange = () => {
+  const broadcastPlayerStatus = () => {
     socket.emit("sync-event", {
       action: "player-status-changed",
       payload: {
-        isPlaying:
-          playerInstance.current.getPlayerState() ===
-          window.YT.PlayerState.PLAYING,
+        isPlaying: isVideoPlayerPlaying(),
       },
     });
   };
+
+  videoPlayerRef.current?.addEventListener("play", broadcastPlayerStatus);
+  videoPlayerRef.current?.addEventListener("pause", broadcastPlayerStatus);
+  videoPlayerRef.current?.addEventListener("ended", broadcastPlayerStatus);
 
   useEffect(() => {
     queueRef.current = queue;
@@ -89,7 +91,6 @@ export default function usePlayer() {
       switch (data.action) {
         case "play-video":
           setCurrentVideo(data.payload.video);
-          setHasError(false);
           break;
         case "add-to-queue": {
           setQueue((queue) => [...queue, data.payload.video]);
@@ -100,23 +101,25 @@ export default function usePlayer() {
           break;
         case "remove-from-queue":
           setQueue((queue) =>
-            queue.filter((item) => item.id !== data.payload.video.id),
+            queue.filter((item) => item.index !== data.payload.video.index),
           );
           break;
         case "restart-current-video":
-          playerInstance.current?.seekTo(0);
-          playerInstance.current?.playVideo();
+          if (!videoPlayerRef.current) return;
+
+          videoPlayerRef.current.currentTime = 0;
+          videoPlayerRef.current.playVideo();
           break;
         case "pause-current-video":
-          playerInstance.current?.pauseVideo();
+          videoPlayerRef.current?.pause();
           break;
         case "play-current-video":
-          playerInstance.current?.playVideo();
+          videoPlayerRef.current?.play();
           broadcastQueue();
           break;
-        // case "get-player-state":
-        //   handleStateChange();
-        //   break;
+        case "get-player-state":
+          broadcastPlayerStatus();
+          break;
       }
     });
 
@@ -127,17 +130,8 @@ export default function usePlayer() {
 
   return {
     currentVideo,
-    setCurrentVideo,
     queue,
-    setQueue,
-    hasError,
-    setHasError,
-    queueRef,
-    currentVideoRef,
     playNextInQueue,
-    handleOnError,
-    handleSkip,
-    handleOnReady,
-    handleStateChange,
+    videoPlayerRef,
   };
 }
