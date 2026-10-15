@@ -1,6 +1,6 @@
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
-import { PORT } from "./config.js";
+import { SERVER_URL } from "./config.js";
 import { VIDEO_DIR_DELIMITER } from "./video-constants.js";
 
 export type VideoSortOrder = "title" | "createdAt";
@@ -125,7 +125,7 @@ class VideoFileManager {
         const filePath = path.resolve(directoryPath, file.name);
         const videoUrl = new URL(
           `/static/downloads/${encodeURIComponent(directory.name)}/${encodeURIComponent(file.name)}`,
-          `http://localhost:${PORT}`,
+          SERVER_URL,
         ).toString();
 
         if (!directory.name.includes(VIDEO_DIR_DELIMITER)) {

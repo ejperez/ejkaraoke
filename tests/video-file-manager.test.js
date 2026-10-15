@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
+import { SERVER_URL } from "../dist/config.js";
 import { VIDEO_DIR_DELIMITER } from "../dist/VideoDownloader.js";
 import VideoFileManager from "../dist/VideoFileManager.js";
 
@@ -148,7 +149,7 @@ test("Can get video by ID", async () => {
   const fileName = `${scannedVideo.title}.mp4`;
   const filePath = new URL(
     `/static/downloads/${encodeURIComponent(directoryName)}/${encodeURIComponent(fileName)}`,
-    `http://localhost:${process.env.PORT || 3000}`,
+    SERVER_URL,
   ).toString();
   const { birthtimeMs: createdAt } = await fs.stat(
     path.join(DOWNLOAD_DIR, directoryName, fileName),
