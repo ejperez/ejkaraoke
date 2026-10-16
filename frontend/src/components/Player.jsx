@@ -1,30 +1,43 @@
 import PlayerHome from "./PlayerHome";
 import PlayerStatusBar from "./PlayerStatusBar";
 import usePlayer from "../hooks/usePlayer";
+import PlayerScore from "./PlayerScore";
 
 export default function Player() {
-  const { currentVideo, queue, playNextInQueue, videoPlayerRef } = usePlayer();
+  const {
+    currentVideo,
+    queue,
+    videoPlayerRef,
+    isShowingScore,
+    playNextInQueue,
+    setIsShowingScore,
+  } = usePlayer();
   const remoteLink = `${document.location.href}remote`;
 
   return (
-    <div className="flex flex-col h-screen">
-      {currentVideo && (
-        <PlayerStatusBar
-          currentVideo={currentVideo}
-          queue={queue}
-          remoteLink={remoteLink}
-        />
-      )}
-      {currentVideo ? (
-        <div className="flex justify-center items-center h-full">
-          <video
-            src={currentVideo.filePath}
-            autoPlay
-            controls
-            onEnded={playNextInQueue}
-            ref={videoPlayerRef}
+    <div className="flex flex-col min-h-screen justify-center">
+      {isShowingScore ? (
+        <PlayerScore callback={playNextInQueue} />
+      ) : currentVideo ? (
+        <>
+          <PlayerStatusBar
+            currentVideo={currentVideo}
+            queue={queue}
+            remoteLink={remoteLink}
           />
-        </div>
+          <div className="h-[calc(100vh-28px)]">
+            <video
+              src={currentVideo.filePath}
+              autoPlay
+              className="h-full w-full"
+              controls
+              onEnded={() => {
+                setIsShowingScore(true);
+              }}
+              ref={videoPlayerRef}
+            />
+          </div>
+        </>
       ) : (
         <PlayerHome remoteLink={remoteLink} />
       )}

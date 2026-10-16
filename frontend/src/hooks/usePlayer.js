@@ -4,6 +4,7 @@ import { socket } from "../util/socket";
 export default function usePlayer() {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [queue, setQueueState] = useState([]);
+  const [isShowingScore, setIsShowingScore] = useState(false);
   const setQueue = useCallback((nextQueue) => {
     setQueueState((currentQueue) => {
       const updatedQueue =
@@ -12,28 +13,13 @@ export default function usePlayer() {
       return updatedQueue.map((item, index) => ({ ...item, index }));
     });
   }, []);
-  // const [isInitialLoad, setIsInitialLoad] = useState(true);
   const queueRef = useRef(queue);
   const currentVideoRef = useRef(currentVideo);
   const videoPlayerRef = useRef(null);
 
-  // useEffect(() => {
-  //   const savedQueue = localStorage.getItem("queue");
-
-  //   if (savedQueue) {
-  //     setQueue(JSON.parse(savedQueue));
-  //   }
-
-  //   setIsInitialLoad(false);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (isInitialLoad) return;
-
-  //   localStorage.setItem("queue", JSON.stringify([currentVideo, ...queue]));
-  // }, [queue, currentVideo, isInitialLoad]);
-
   const playNextInQueue = () => {
+    setIsShowingScore(false);
+
     if (queue.length > 0) {
       setCurrentVideo(queue[0]);
       setQueue((queue) => queue.slice(1));
@@ -133,5 +119,7 @@ export default function usePlayer() {
     queue,
     playNextInQueue,
     videoPlayerRef,
+    isShowingScore,
+    setIsShowingScore,
   };
 }
