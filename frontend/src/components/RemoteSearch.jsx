@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   MdDownload,
   MdDownloadDone,
@@ -11,9 +11,15 @@ import SearchList from "./SearchList";
 import useRemoteDownloads from "../hooks/useRemoteDownloads";
 
 function SearchListItemOptions({ video }) {
-  const { download, latestDownloadedId } = useRemoteDownloads();
+  const { download, latestDownloadedId, latestFailedId } = useRemoteDownloads();
 
   const [isClicked, setIsClicked] = useState(false);
+
+  useEffect(() => {
+    if (latestFailedId === video.id) {
+      setIsClicked(false);
+    }
+  }, [latestFailedId]);
 
   const handleClick = async (addToQueue = false) => {
     await download(video.id, addToQueue);
@@ -28,7 +34,9 @@ function SearchListItemOptions({ video }) {
           <MdDownloadDone size={30} color="green" />
         </div>
       ) : isClicked ? (
-        <MdOutlineDownloading size={30} color="orange" />
+        <div className="flex items-center justify-center size-12">
+          <MdOutlineDownloading size={30} color="orange" />
+        </div>
       ) : (
         <>
           <button
@@ -44,7 +52,9 @@ function SearchListItemOptions({ video }) {
           <button
             type="button"
             className="flex items-center justify-center size-12"
-            onClick={handleClick}
+            onClick={() => {
+              handleClick();
+            }}
           >
             <MdDownload size={30} />
           </button>

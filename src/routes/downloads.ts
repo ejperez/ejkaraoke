@@ -20,7 +20,7 @@ const createDownloadsRouter = (
     videoDownloadQueue
       .getQueue()
       .push({ id })
-      .on("finish", async function (result) {
+      .on("finish", async function () {
         io.emit("sync-event", {
           action: "download-finished",
           payload: { id },
@@ -38,6 +38,11 @@ const createDownloadsRouter = (
         }
       })
       .on("failed", function (err) {
+        io.emit("sync-event", {
+          action: "download-failed",
+          payload: { id },
+        });
+
         console.error("Failure", err);
       });
 

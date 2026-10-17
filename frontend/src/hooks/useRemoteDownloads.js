@@ -7,13 +7,20 @@ const BACKEND_API =
 
 export default function useRemoteDownloads() {
   const [latestDownloadedId, setLatestDownloadedId] = useState(null);
+  const [latestFailedId, setLatestFailedId] = useState(null);
 
   // Handle sync events from server
   useEffect(() => {
     socket.on("sync-event", (data) => {
+      console.log(data);
+
       switch (data.action) {
         case "download-finished":
           setLatestDownloadedId(data.payload.id);
+
+          break;
+        case "download-failed":
+          setLatestFailedId(data.payload.id);
 
           break;
       }
@@ -39,5 +46,6 @@ export default function useRemoteDownloads() {
   return {
     download,
     latestDownloadedId,
+    latestFailedId,
   };
 }

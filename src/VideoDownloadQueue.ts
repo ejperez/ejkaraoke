@@ -17,12 +17,12 @@ class VideoDownloadQueue {
   #createQueue() {
     return new Queue(
       async (input: VideoDownloaderInput, cb) => {
-        const { id } = input;
-
-        console.log(`[Worker] Starting download: ${id}`);
-        const output = await this.downloader.download({ id });
-
         try {
+          const { id } = input;
+
+          console.log(`[Worker] Starting download: ${id}`);
+          const output = await this.downloader.download({ id });
+
           cb(null, output);
         } catch (error: any) {
           if (error instanceof Error) {
@@ -36,7 +36,7 @@ class VideoDownloadQueue {
       {
         // Configuration options
         concurrent: 1,
-        maxRetries: 3,
+        maxRetries: 1,
         retryDelay: 5000,
       },
     );
