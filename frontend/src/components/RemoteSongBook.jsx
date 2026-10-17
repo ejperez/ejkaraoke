@@ -62,10 +62,24 @@ function SearchForm({ setCurrentSearch, setCurrentPage }) {
 function Pagination({ currentPage, setCurrentPage, maxPages }) {
   const handlePrevious = () => {
     setCurrentPage((page) => page - 1);
+    setTimeout(() => {
+      window.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 100);
   };
 
   const handleNext = () => {
     setCurrentPage((page) => page + 1);
+    setTimeout(() => {
+      window.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "smooth",
+      });
+    }, 100);
   };
 
   return (
