@@ -20,9 +20,9 @@ export default function Remote() {
       </header>
 
       <div className="mt-12">
-        {currentView === "Song Book" && <RemoteSongBook />}
-        {currentView === "Search" && <RemoteSearch />}
-        {currentView === "Queue" && <RemoteQueue />}
+        <RemoteSongBook isActive={currentView === "Song Book"} />
+        <RemoteSearch isActive={currentView === "Search"} />
+        <RemoteQueue isActive={currentView === "Queue"} />
       </div>
     </>
   );

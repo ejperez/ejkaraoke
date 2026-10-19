@@ -81,13 +81,13 @@ function CurrentVideoListItemOptions({ video }) {
   );
 }
 
-export default function RemoteQueue() {
+export default function RemoteQueue({ isActive }) {
   const { currentQueue, currentVideo, playerIsPlaying, isQueueLoading } =
     useRemoteQueue();
 
   return (
     <QueueContext.Provider value={{ playerIsPlaying }}>
-      <div className="px-4">
+      <div className={`px-4 ${isActive ? "" : "hidden"}`}>
         <div className="pb-2 text-sm font-bold">NOW PLAYING</div>
 
         {isQueueLoading ? (

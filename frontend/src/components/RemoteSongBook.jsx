@@ -140,7 +140,7 @@ function Sort({ currentSort, setCurrentSort, setCurrentPage }) {
   );
 }
 
-export default function RemoteSongBook() {
+export default function RemoteSongBook({ isActive }) {
   const {
     getSongs,
     songs,
@@ -154,7 +154,7 @@ export default function RemoteSongBook() {
   } = useRemoteSongBook();
 
   return (
-    <div className="flex flex-col gap-2 px-2">
+    <div className={`flex flex-col gap-2 px-2 ${isActive ? "" : "hidden"}`}>
       <div className="flex gap-2">
         <SearchForm
           {...{

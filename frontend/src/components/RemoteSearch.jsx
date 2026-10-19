@@ -4,11 +4,13 @@ import {
   MdDownloadDone,
   MdOutlinePlaylistAdd,
   MdOutlineDownloading,
+  MdOutlinePlaylistAddCheck,
 } from "react-icons/md";
 import useRemoteSearch from "../hooks/useRemoteSearch";
 import ErrorComponent from "./ErrorComponent";
 import SearchList from "./SearchList";
 import useRemoteDownloads from "../hooks/useRemoteDownloads";
+import { NO_DOWNLOADS } from "../util/config";
 
 function SearchListItemOptions({ video }) {
   const { download, latestDownloadedId, latestFailedId } = useRemoteDownloads();
@@ -64,6 +66,26 @@ function SearchListItemOptions({ video }) {
   );
 }
 
+function SearchListingItemNoDownloadOptions({ video }) {
+  const [isClicked, setIsClicked] = useState(false);
+
+  return isClicked ? (
+    <div className="flex items-center justify-center size-12">
+      <MdOutlinePlaylistAddCheck className="w-10" size={30} color="green" />
+    </div>
+  ) : (
+    <button
+      type="button"
+      className="flex items-center justify-center size-12"
+      onClick={() => {
+        setIsClicked(true);
+      }}
+    >
+      <MdOutlinePlaylistAdd size={30} />
+    </button>
+  );
+}
+
 function SearchForm({ setSearchTerm }) {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -87,7 +109,7 @@ function SearchForm({ setSearchTerm }) {
   );
 }
 
-export default function RemoteSearch() {
+export default function RemoteSearch({ isActive }) {
   const {
     loadMoreHandler,
     items,
@@ -99,7 +121,7 @@ export default function RemoteSearch() {
   } = useRemoteSearch();
 
   return (
-    <div className="px-2">
+    <div className={`px-2 ${isActive ? "" : "hidden"}`}>
       <SearchForm {...{ setSearchTerm }} />
       <div className="mt-2">
         {items.length === 0 && !isLoadingMore && !isLoadingSearch ? (
@@ -115,7 +137,11 @@ export default function RemoteSearch() {
                 (obj, index, self) =>
                   index === self.findIndex((o) => o.id === obj.id),
               )}
-              OptionsElement={SearchListItemOptions}
+              OptionsElement={
+                NO_DOWNLOADS
+                  ? SearchListingItemNoDownloadOptions
+                  : SearchListItemOptions
+              }
             />
 
             {hasNextPage && !isLoadingMore && (
