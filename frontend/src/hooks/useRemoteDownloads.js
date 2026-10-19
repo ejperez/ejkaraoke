@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { socket } from "../util/socket";
+import { BACKEND_URL } from "../util/config";
 
-const BACKEND_API =
-  (import.meta.env.VITE_BACKEND_URL || "http://localhost:3000") +
-  "/api/downloads";
+const BACKEND_API = BACKEND_URL + "/api/downloads";
 
 export default function useRemoteDownloads() {
   const [latestDownloadedId, setLatestDownloadedId] = useState(null);

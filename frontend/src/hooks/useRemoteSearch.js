@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { BACKEND_URL } from "../util/config";
 
-const BACKEND_API =
-  (import.meta.env.VITE_BACKEND_URL || "http://localhost:3000") + "/api/search";
+const BACKEND_API = BACKEND_URL + "/api/search";
 
 const decodeEntity = (inputStr) => {
   var textarea = document.createElement("textarea");

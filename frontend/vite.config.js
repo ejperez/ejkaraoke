@@ -4,8 +4,6 @@ import { resolve } from "node:path";
 import { defineConfig, loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), "");
-
   return {
     plugins: [react(), tailwindcss()],
     build: {
@@ -16,9 +14,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    base: env.VITE_BASE_PATH || "/",
+    base: "/",
     server: {
-      port: env.VITE_PORT || 3000,
+      port: 3001,
       strictPort: true,
     },
   };
