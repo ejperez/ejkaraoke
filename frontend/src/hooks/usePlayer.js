@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { socket } from "../util/socket";
+import { NO_DOWNLOADS } from "../util/config";
 
 export default function usePlayer() {
   const [currentVideo, setCurrentVideo] = useState(null);
   const [queue, setQueueState] = useState([]);
+  const [hasError, setHasError] = useState(false);
   const [isShowingScore, setIsShowingScore] = useState(false);
   const setQueue = useCallback((nextQueue) => {
     setQueueState((currentQueue) => {
@@ -46,6 +48,13 @@ export default function usePlayer() {
   };
 
   const isVideoPlayerPlaying = () => {
+    if (NO_DOWNLOADS) {
+      return (
+        videoPlayerRef.current.getPlayerState() ===
+        window.YT.PlayerState.PLAYING
+      );
+    }
+
     if (!videoPlayerRef.current) return false;
 
     return !videoPlayerRef.current.paused && !videoPlayerRef.current.ended;
@@ -59,10 +68,6 @@ export default function usePlayer() {
       },
     });
   };
-
-  videoPlayerRef.current?.addEventListener("play", broadcastPlayerStatus);
-  videoPlayerRef.current?.addEventListener("pause", broadcastPlayerStatus);
-  videoPlayerRef.current?.addEventListener("ended", broadcastPlayerStatus);
 
   useEffect(() => {
     queueRef.current = queue;
@@ -93,14 +98,33 @@ export default function usePlayer() {
         case "restart-current-video":
           if (!videoPlayerRef.current) return;
 
-          videoPlayerRef.current.currentTime = 0;
-          videoPlayerRef.current.playVideo();
+          if (NO_DOWNLOADS) {
+            videoPlayerRef.current.seekTo(0);
+            videoPlayerRef.current.playVideo();
+          } else {
+            videoPlayerRef.current.currentTime = 0;
+            videoPlayerRef.current.playVideo();
+          }
+
           break;
         case "pause-current-video":
-          videoPlayerRef.current?.pause();
+          if (!videoPlayerRef.current) return;
+
+          if (NO_DOWNLOADS) {
+            videoPlayerRef.current.pauseVideo();
+          } else {
+            videoPlayerRef.current.pause();
+          }
+
           break;
         case "play-current-video":
-          videoPlayerRef.current?.play();
+          if (!videoPlayerRef.current) return;
+
+          if (NO_DOWNLOADS) {
+            videoPlayerRef.current.playVideo();
+          } else {
+            videoPlayerRef.current.play();
+          }
           broadcastQueue();
           break;
         case "get-player-state":
@@ -114,12 +138,21 @@ export default function usePlayer() {
     };
   }, []);
 
+  const handleSkip = () => {
+    playNextInQueue();
+    setHasError(false);
+  };
+
   return {
     currentVideo,
     queue,
-    playNextInQueue,
     videoPlayerRef,
     isShowingScore,
+    hasError,
     setIsShowingScore,
+    playNextInQueue,
+    setHasError,
+    handleSkip,
+    broadcastPlayerStatus,
   };
 }

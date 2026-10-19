@@ -24,7 +24,7 @@ function AnimatedBackground() {
 
 export default function PlayerHome({ playerID, remoteLink }) {
   return (
-    <div className="flex flex-col h-full w-full justify-center items-center">
+    <div className="flex flex-col h-full w-full justify-center items-center flex-1">
       <div className="z-2 text-center p-2">
         <h1 className="text-center lg:text-7xl md:text-5xl text-4xl font-heading">
           Welcome great singers!

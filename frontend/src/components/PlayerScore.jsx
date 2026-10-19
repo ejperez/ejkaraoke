@@ -6,26 +6,22 @@ function getKaraokeResult() {
   const score = Math.floor(Math.random() * (max - min + 1)) + min;
 
   let message = "";
-  let emoji = "";
-
   if (score === 100) {
-    message = "Uwian na may nanalo na!";
-    emoji = "👑🔥";
+    message = "Uwian na may nanalo na! 👑🔥";
+  }
+  if (score === 69) {
+    message = "Noice! 🫦";
   } else if (score >= 95) {
-    message = "Absolute Rockstar! A perfect performance!";
-    emoji = "👑🔥";
+    message = "Absolute Rockstar! A perfect performance! 🎸🔥";
   } else if (score >= 85) {
-    message = "Amazing job! The crowd loves you!";
-    emoji = "👏🎤";
+    message = "Amazing job! The crowd loves you! 👏🎤";
   } else if (score >= 70) {
-    message = "Good effort! You've got some rhythm!";
-    emoji = "🎵👍";
+    message = "Good effort! You've got some rhythm! 🎵👍";
   } else {
-    message = "Keep practicing! Don't quit your day job just yet.";
-    emoji = "💔😂";
+    message = "Keep practicing! Don't quit your day job just yet. 💔😂";
   }
 
-  return { score, message, emoji };
+  return { score, message };
 }
 
 function getTwoDigitString(min = 0, max = 99) {
@@ -64,13 +60,13 @@ export default function PlayerScore({ callback }) {
   }, []);
 
   return (
-    <div>
+    <div className="flex justify-center h-full">
       <div className="flex justify-center items-center flex-col">
-        <div className="font-heading text-9xl z-1">{score}</div>
+        <div className="font-heading text-[200px] leading-48 z-1">{score}</div>
         {message && <div className="z-1 text-2xl">{message}</div>}
       </div>
       <video
-        className="fixed -top-25 w-auto min-w-full min-h-[120%] max-w-none opacity-60"
+        className="fixed -top-25 w-auto min-w-full min-h-[120%] max-w-none opacity-50"
         autoPlay
         loop
         muted

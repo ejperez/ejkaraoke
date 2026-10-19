@@ -11,7 +11,7 @@ import {
 } from "../scripts/import-videos.js";
 
 async function withTempDirectory(callback) {
-  const root = await fs.mkdtemp(path.join(os.tmpdir(), "ejkaraoke-import-"));
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), "youtubeoke-import-"));
   try {
     await callback(root);
   } finally {
@@ -74,7 +74,10 @@ test("retries IDs that collide with existing download entries", async () => {
     await fs.mkdir(source);
     await fs.mkdir(downloads);
     await fs.mkdir(
-      path.join(downloads, `IMPabcdefghijk${VIDEO_DIR_DELIMITER}ExistingChannel`),
+      path.join(
+        downloads,
+        `IMPabcdefghijk${VIDEO_DIR_DELIMITER}ExistingChannel`,
+      ),
     );
     await fs.writeFile(
       path.join(downloads, `IMPmnopqrstuvw${VIDEO_DIR_DELIMITER}`),

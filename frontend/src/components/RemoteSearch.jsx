@@ -11,6 +11,7 @@ import ErrorComponent from "./ErrorComponent";
 import SearchList from "./SearchList";
 import useRemoteDownloads from "../hooks/useRemoteDownloads";
 import { NO_DOWNLOADS } from "../util/config";
+import { emitEvent } from "../util/socket";
 
 function SearchListItemOptions({ video }) {
   const { download, latestDownloadedId, latestFailedId } = useRemoteDownloads();
@@ -79,6 +80,14 @@ function SearchListingItemNoDownloadOptions({ video }) {
       className="flex items-center justify-center size-12"
       onClick={() => {
         setIsClicked(true);
+        emitEvent("add-to-queue", {
+          video: {
+            id: video.id,
+            isYT: true,
+            channelName: video.channel,
+            title: video.title,
+          },
+        });
       }}
     >
       <MdOutlinePlaylistAdd size={30} />
@@ -111,20 +120,25 @@ function SearchForm({ setSearchTerm }) {
 
 export default function RemoteSearch({ isActive }) {
   const {
-    loadMoreHandler,
     items,
     hasNextPage,
     isLoadingMore,
     isLoadingSearch,
     error,
+    searchTerm,
     setSearchTerm,
+    loadMoreHandler,
   } = useRemoteSearch();
 
   return (
     <div className={`px-2 ${isActive ? "" : "hidden"}`}>
       <SearchForm {...{ setSearchTerm }} />
       <div className="mt-2">
-        {items.length === 0 && !isLoadingMore && !isLoadingSearch ? (
+        {searchTerm === "" ? (
+          <div className="pb-2 text-sm">
+            The audience is waiting. Seach and pick a song from here.
+          </div>
+        ) : items.length === 0 && !isLoadingMore && !isLoadingSearch ? (
           <div className="pb-2 text-sm font-bold">NO RESULTS</div>
         ) : isLoadingSearch ? (
           <div className="my-2 h-10">Loading results...</div>

@@ -2,6 +2,8 @@ import PlayerHome from "./PlayerHome";
 import PlayerStatusBar from "./PlayerStatusBar";
 import usePlayer from "../hooks/usePlayer";
 import PlayerScore from "./PlayerScore";
+import PlayerFrame from "./PlayerFrame";
+import PlayerError from "./PlayerError";
 
 export default function Player() {
   const {
@@ -9,13 +11,17 @@ export default function Player() {
     queue,
     videoPlayerRef,
     isShowingScore,
+    hasError,
     playNextInQueue,
     setIsShowingScore,
+    setHasError,
+    handleSkip,
+    broadcastPlayerStatus,
   } = usePlayer();
   const remoteLink = `${document.location.href}remote`;
 
   return (
-    <div className="flex flex-col min-h-screen justify-center">
+    <div className="flex flex-col h-screen">
       {isShowingScore ? (
         <PlayerScore callback={playNextInQueue} />
       ) : currentVideo ? (
@@ -25,18 +31,22 @@ export default function Player() {
             queue={queue}
             remoteLink={remoteLink}
           />
-          <div className="h-[calc(100vh-28px)]">
-            <video
-              src={currentVideo.filePath}
-              autoPlay
-              className="h-full w-full"
-              controls
-              onEnded={() => {
-                setIsShowingScore(true);
-              }}
-              ref={videoPlayerRef}
-            />
-          </div>
+
+          {hasError ? (
+            <PlayerError video={currentVideo} onSkip={handleSkip} />
+          ) : (
+            <div className="flex-1 overflow-hidden">
+              <PlayerFrame
+                {...{
+                  currentVideo,
+                  videoPlayerRef,
+                  setIsShowingScore,
+                  setHasError,
+                  broadcastPlayerStatus,
+                }}
+              />
+            </div>
+          )}
         </>
       ) : (
         <PlayerHome remoteLink={remoteLink} />

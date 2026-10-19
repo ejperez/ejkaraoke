@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function PlayerStatusBar({ currentVideo, queue, remoteLink }) {
   const [isQRShown, setIsQRShown] = useState(false);
   return (
-    <div className="flex z-50 gap-1 justify-between p-1 w-full text-sm bg-black items-center font-heading">
+    <div className="flex z-50 gap-1 justify-between p-1 w-full text-sm bg-black items-center font-heading shrink-0">
       <div className="flex w-full min-w-0 grow gap-1">
         {currentVideo && (
           <div className="truncate text-green-500">{currentVideo.title}</div>
